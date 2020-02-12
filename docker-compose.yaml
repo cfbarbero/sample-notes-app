@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  db:
+    build:
+      dockerfile: Dockerfile-pg.yaml
+      context: .
+  app:
+    build:
+      dockerfile: Dockerfile-app.yaml
+      context: .
+    depends_on:
+      - db
+    ports: 
+      - 80:8888
