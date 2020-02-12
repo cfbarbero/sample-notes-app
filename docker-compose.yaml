@@ -1,14 +1,19 @@
 version: "3.7"
 services:
   db:
-    build:
-      dockerfile: Dockerfile-pg.yaml
-      context: .
+    image: postgres
+    volumes:
+      - ./app/db/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./app/db/02-seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    environment: 
+      POSTGRES_DB: devops
   app:
     build:
-      dockerfile: Dockerfile-app.yaml
-      context: .
+      context: app
     depends_on:
       - db
     ports: 
       - 80:8888
+    # Wait for pg to be available on 5432. 
+    # This works around the situation where pg restarts during first initialization
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; echo starting && npm start'
