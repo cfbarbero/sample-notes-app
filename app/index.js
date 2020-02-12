@@ -4,11 +4,12 @@ const winston = require('winston');
 const db = require('./db');
 
 const app = express();
-const HOSTNAME = 'localhost';
-const PORT = '8888';
+const HOSTNAME = process.env.HOSTNAME || 'localhost';
+const PORT = process.env.PORT || '8888';
+const LOGLEVEL = process.env.LOGLEVEL || 'info';
 
 const logger = winston.createLogger({
-  level: 'info',
+  level: LOGLEVEL,
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.json()
@@ -16,6 +17,7 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
     new winston.transports.File({ filename: 'logs/combined.log' }),
+    new winston.transports.Console()
   ],
 })
 

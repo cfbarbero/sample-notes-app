@@ -4,7 +4,20 @@ We have a simple NodeJS API with an exposed endpoint that requests data from a P
 - How would you help standardize the local environment to facilicate more efficient development?
 - Which values need to be moved from the code -> configuraiton?
 - What are some best practices you'd recommend following?
-  - How would you approach the application engineers to implement them?
+- How would you approach the application engineers to implement them?
+
+## Change Log
+
+1. Create a docker-compose setup with a postgres db service and a nodejs service
+2. Setup a multi-stage docker build for the nodejs service that invokes the unit tests
+3. Add a release stage to the docker build that generates an 'optimized' build with only our production dependencies
+ 
+   a. Note, the db scripts still need to be stripped from this package
+
+4. Externalize the port, hostname and loglevel from the app code. These are now passed in as environment variables. In docker-compose I have defaulted them to meaningful local values, but in production we'd override them in our orchestrator configuration.
+5. Added a winston console logger so that our application logs are picked up by docker. We can now configure a docker log driver to publish these logs to a standard tool (ie awslogs/cloudwatch, splunk, etc)
+
+    a. It's likely that we'll want to disable the file logging or at least ensure we have proper log file rotation in place when we are running in a container so that we don't run out of disk space
 
 ## Usage
 

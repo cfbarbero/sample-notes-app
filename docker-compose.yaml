@@ -13,7 +13,11 @@ services:
     depends_on:
       - db
     ports: 
-      - 80:8888
+      - 80:5000
+    environment: 
+      PORT: 5000
+      HOSTNAME: localhost
+      LOGLEVEL: info
     # Wait for pg to be available on 5432. 
     # This works around the situation where pg restarts during first initialization
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; echo starting && npm start'
